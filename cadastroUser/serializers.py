@@ -10,7 +10,7 @@ class UsuarioComumSerializer(serializers.ModelSerializer):
         #passando kwargs para não retornarem dados sensiveis como email e senha, quando as requisições forem feitas
         extra_kwargs = {
             'email':{'write_only': True},
-            'password':{'write_only':True}
+            #'password':{'write_only':True}
           }
         fields = (
             'username',
@@ -27,7 +27,7 @@ class UsuarioComumSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ('is_staff','criacao','atualizacao', 'date_joined')
     
-    
+
 
     #Cria Um novo usuário usando os recursos de autenticação e segurança do django
     def create(self, validated_data):

@@ -1,5 +1,9 @@
 from django.db import models
+from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+from django.db.models.signals import post_save
+
 from rest_framework.authtoken.models import Token
 
 class BaseModel(models.Model):
@@ -20,11 +24,11 @@ class UsuarioComum(AbstractUser, BaseModel):
         verbose_name = 'Usuario-Comum'
         verbose_name_plural = 'Usuarios-Comuns'
 
-    def get_auth_token(self):
-        try:
-            return Token.objects.get(user=self)
-        except Token.DoesNotExist:
-            return None
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
 
 UsuarioComum._meta.get_field('groups').remote_field.related_name = 'custom_user_groups'
 UsuarioComum._meta.get_field('user_permissions').remote_field.related_name = 'custom_user_user_permissions'
